@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fundraising strategyy </title>
+    <title>Fundraising Astro </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -125,6 +125,9 @@
             border: 2px solid var(--pixel-border);
             padding: 1.5rem;
         }
+        #start-button {
+            pointer-events: all; /* Ensure the start button is always clickable */
+        }
         /* Stars background */
         .stars {
             background-image:
@@ -152,9 +155,10 @@
                 <p class="text-7xl mt-4" style="color: var(--pixel-yellow); text-shadow: 4px 4px #000;">
                     Astro
                 </p>
-                <p class="mt-8 text-2xl animate-pulse" style="color:var(--pixel-green)">
-                  - CLICK ANYWHERE TO START -
-                </p>
+                <button id="start-button" class="mt-8 text-2xl animate-pulse p-4" style="color:var(--pixel-green); background: none; border: none; cursor: pointer;">
+                  - PRESS START -
+                </button>
+                 <p class="text-xs mt-4 opacity-70">(Klik di mana saja untuk layar penuh)</p>
             </div>
         </div>
 
@@ -472,26 +476,23 @@
             }
         }
         
-        function handleFirstClick(event) {
-            // Check if the click is not on the navigation buttons
-            if (event.target.classList.contains('nav-btn')) return;
-
-            // FIX: Request fullscreen on the container, not the whole document.
+        function initiatePresentation(event) {
+            // Request fullscreen on the container
             enterFullscreen(container);
-            
-            // Advance to the first mission slide only if we are on the title slide
-            if (slideIndex === 0) {
-                 setTimeout(() => {
-                    changeSlide(1);
+
+            // Check if the click was specifically on the "START" button
+            if (event.target.id === 'start-button') {
+                setTimeout(() => {
+                    changeSlide(1); // Advance to the next slide
                 }, 100);
             }
             
-            // Remove the listener so it only happens once
-            container.removeEventListener('click', handleFirstClick);
+            // This function should only ever run once. Remove the listener.
+            container.removeEventListener('click', initiatePresentation);
             container.style.cursor = 'default';
         }
 
-        container.addEventListener('click', handleFirstClick);
+        container.addEventListener('click', initiatePresentation);
         
         function renderMinatChart() {
             const ctx = document.getElementById('minatChart').getContext('2d');
